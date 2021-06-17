@@ -1,24 +1,29 @@
 const express = require("express");
+const cors = require("cors")
+const path = require("path")
+const { port } = require("./config")
 const { db } = require("./db");
-
 const app = express();
-const port = 3000;
+
+
+app.use(cors())
+app.use(express.json())
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 app.get("/", (req, res) => {
-  res.send("Hello");
+  res.sendFile(path.join(__dirname, "build", "../../frontend/build/index.html"))
 });
 
 GET("/menu/find/:id", (req) => db.items.findById(req.params.id));
 
-GET("/menu/all", (req) => db.items.all());
+GET("/menu/all", () => db.items.all());
 
-PUT("/menu/add", (req) => db.items.add(req.body));
+POST("/menu/add", (req) => db.items.add(req.body));
 
-function PUT(url, handler) {
-  app.put(url, async (req, res) => {
+function POST(url, handler) {
+  app.post(url, async (req, res) => {
     try {
-      const { id, name, chinese, price, category, enabled } = req.body;
-      const data = await handler(id, name, chinese, price, category, enabled);
+      const data = await handler(req);
       res.json({
         success: true,
         data,

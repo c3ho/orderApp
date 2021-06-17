@@ -3,7 +3,7 @@ const { join: joinPath } = require("path");
 
 module.exports = {
   items: {
-    add: sql("items/create.sql"),
+    add: sql("items/add.sql"),
     find: sql("items/find.sql"),
   },
 };

@@ -1,0 +1,75 @@
+html {
+  min-width: 550px;
+}
+
+#menuNavbar {
+  max-width: 75%;
+  justify-content: left;
+
+  margin-right: auto;
+  flex-wrap: nowrap;
+  min-height: 50px;
+}
+
+#menuNavbar.bg-light {
+  background-color: white !important;
+}
+
+#menuNavbar.navbar-light .navbar-nav .nav-link {
+  color: rgba(0, 0, 0, 0.911);
+}
+
+.d-block {
+  max-height: 200px;
+}
+
+#carousel {
+  max-width: 55%;
+  min-height: 300px;
+  height: 100px;
+  max-height: 300px;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-body {
+  max-width: 300px;
+  text-align: left;
+}
+
+.card {
+  max-width: 300px;
+}
+
+.h5 {
+  font-size: 16px !important;
+}
+
+#menuHeader {
+  text-align: left;
+  padding: 8px 16px;
+}
+
+.nav-link {
+  white-space: nowrap;
+}
+
+#menuNavbar .nav-link {
+  padding-right: 50px;
+}
+
+#hr {
+  margin-left: 16px;
+}
+
+#deck {
+  margin-left: 2px;
+  margin-right: 2px;
+  height: auto;
+}
+
+#menu {
+  min-height: 1000px;
+}

@@ -1,7 +1,7 @@
 const pgPromise = require("pg-promise");
 const dbConfig = require("../config");
 const { Items } = require("./repos");
-// const { db_url } = require("../config");
+const { pgUser, pgPassword, pgHost, pgPort, pgDatabase } = require("../config");
 
 const initOptions = {
   extend(obj, dc) {
@@ -12,14 +12,24 @@ const initOptions = {
 const pgp = pgPromise(initOptions);
 // const db = pgp(db_url);
 
+// const cn = {
+//   user: "postgres",
+//   password: "postgres",
+//   host: "localhost",
+//   port: 5432,
+//   database: "restaurant",
+// };
+
 const cn = {
-  host: "db",
-  port: 5432,
-  database: "restaurant",
-  user: "postgres",
+  user: pgUser,
+  password: pgPassword,
+  host: pgHost,
+  port: pgPort,
+  database: pgDatabase,
 };
 
-const db = pgp("postgres://postgres:postgres123@db:5432/restaurant");
+//const db = pgp("postgres://postgres:postgres@localhost:5432/restaurant");
+const db = pgp(cn);
 
 db.connect()
   .then((obj) => {
@@ -32,6 +42,6 @@ db.connect()
     console.log("ERROR:", error.message || error);
   });
 
-// const db = pgp("postgres://postgres:postgres@db:5432/restaurant");
+
 
 module.exports = { db, pgp };
