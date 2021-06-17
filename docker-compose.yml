@@ -2,10 +2,17 @@ version: "3.9"
 services:
   web:
     build: .
+    env_file:
+      - .env
     ports:
-      - 3000:3000
+      - 4000:4000
     environment:
-      - DATABASE_URL=postgres://postgres:postgres123@db:5432/restaurant
+      # - DATABASE_URL=postgres://postgres:postgres123@db:5432/restaurant
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres123
+      - PG_HOST=db
+      - PG_PORT=5432
+      - PG_DATABASE=restaurant
     depends_on:
       - db
     links:
@@ -14,11 +21,12 @@ services:
     image: postgres:latest
     restart: always
     volumes:
-      - ./src/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./src/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=restaurant
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_PORT=5432
     ports:
       - 5432:5432

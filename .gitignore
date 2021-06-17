@@ -1,5 +1,8 @@
-package-lock.json
-backend/node_modules
+*package-lock.json
+src/backend/node_modules
+src/frontend/build
+src/frontend/node_modules
+src/frontend/public
 .env
 .vscode/
 postgres-data
