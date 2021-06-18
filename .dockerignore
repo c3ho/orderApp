@@ -1,2 +1,5 @@
 ./src/backend/node_modules
 npm-debug.log
+./src/frontend/node_modules
+./src/frontend/build
+.dockerignore

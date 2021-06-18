@@ -7,7 +7,6 @@ services:
     ports:
       - 4000:4000
     environment:
-      # - DATABASE_URL=postgres://postgres:postgres123@db:5432/restaurant
       - PG_USER=postgres
       - PG_PASSWORD=postgres123
       - PG_HOST=db
@@ -17,6 +16,7 @@ services:
       - db
     links:
       - db:db
+
   db:
     image: postgres:latest
     restart: always
@@ -30,3 +30,29 @@ services:
       - POSTGRES_PORT=5432
     ports:
       - 5432:5432
+
+  nginx:
+    image: nginx:latest
+    container_name: "nginx"
+    ports:
+      - 80:80
+      - 443:443
+    restart:
+      - unless-stopped
+    volumes:
+      - ./deploy/certbot/conf:/etc/letsencrypt
+      - ./deploy/certbot/www:/var/www/certbot
+      - ./deploy/nginx.conf:/etc/nginx/
+    depends_on:
+      - web
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  certbot:
+    image: certbot/certbot
+    container_name: "certbot"
+    volumes:
+      - ./deploy/certbot/conf:/etc/letsencrypt
+      - ./deploy/certbot/www:/var/www/certbot
+    restart: always
+    # This will check if your certificate is up for renewal every 12 hours as recommended by Let’s Encrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

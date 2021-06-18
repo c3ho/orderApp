@@ -3,6 +3,8 @@ const dbConfig = require("../config");
 const { Items } = require("./repos");
 const { pgUser, pgPassword, pgHost, pgPort, pgDatabase } = require("../config");
 
+const MAX_RETRIES = 5
+
 const initOptions = {
   extend(obj, dc) {
     obj.items = new Items(obj, pgp);
@@ -10,15 +12,6 @@ const initOptions = {
 };
 
 const pgp = pgPromise(initOptions);
-// const db = pgp(db_url);
-
-// const cn = {
-//   user: "postgres",
-//   password: "postgres",
-//   host: "localhost",
-//   port: 5432,
-//   database: "restaurant",
-// };
 
 const cn = {
   user: pgUser,
@@ -31,17 +24,27 @@ const cn = {
 //const db = pgp("postgres://postgres:postgres@localhost:5432/restaurant");
 const db = pgp(cn);
 
-db.connect()
+let retries = 0;
+
+function connect() {
+  db.connect()
   .then((obj) => {
     // Can check the server version here (pg-promise v10.1.0+):
     const serverVersion = obj.client.serverVersion;
 
     obj.done(); // success, release the connection;
+    console.log("Successfully connected to PostgreSQL!")
   })
   .catch((error) => {
     console.log("ERROR:", error.message || error);
+    if (retries < MAX_RETRIES) {
+      retries++;
+      console.log(`Failed to connect to PostgreSQL, retrying again after 5s, retry #${retries}`)
+      setTimeout(() => connect(), 5000)
+    }
   });
+}
 
-
+connect()
 
 module.exports = { db, pgp };
