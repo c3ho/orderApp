@@ -1,35 +1,35 @@
 version: "3.9"
 services:
-  # web:
-  #   build: .
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - 4000:4000
-  #   environment:
-  #     - PG_USER=postgres
-  #     - PG_PASSWORD=postgres123
-  #     - PG_HOST=db
-  #     - PG_PORT=5432
-  #     - PG_DATABASE=restaurant
-  #   depends_on:
-  #     - db
-  #   links:
-  #     - db:db
+  web:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 4000:4000
+    environment:
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres123
+      - PG_HOST=db
+      - PG_PORT=5432
+      - PG_DATABASE=restaurant
+    depends_on:
+      - db
+    links:
+      - db:db
 
-  # db:
-  #   image: postgres:latest
-  #   restart: always
-  #   volumes:
-  #     - ./src/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
-  #     - ./postgres-data:/var/lib/postgresql/data
-  #   environment:
-  #     - POSTGRES_DB=restaurant
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres123
-  #     - POSTGRES_PORT=5432
-  #   ports:
-  #     - 5432:5432
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - ./src/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=restaurant
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_PORT=5432
+    ports:
+      - 5432:5432
 
   service_name:
     image: nginx:latest
@@ -45,10 +45,11 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - ./data/nginx:/etc/nginx/conf.d
-    # depends_on:
-    #   - web
-    # command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-    command: /bin/ash -c "exec nginx -g 'daemon off;'"
+    depends_on:
+      - web
+    # Comment the command below and the https part of the nginx.conf file when running this for the first time
+    # otherwise nginx will crash because it can't execute the command
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     networks:
       - default
 
