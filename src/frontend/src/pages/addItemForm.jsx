@@ -1,6 +1,7 @@
 import "../css/AddItemForm.css";
 import { Form, Button } from "react-bootstrap";
 import React, { useState } from "react";
+const link = process.env.REACT_APP_BACKEND_URL;
 const fetch = require("node-fetch");
 
 const AddItemForm = () => {
@@ -26,8 +27,7 @@ const AddItemForm = () => {
       category,
       enabled,
     };
-
-    fetch("http://localhost:4000/menu/add", {
+    fetch(`${link}/menu/add`, {
       method: "POST",
       body: JSON.stringify(payload),
       headers: { "Content-Type": "application/json" },

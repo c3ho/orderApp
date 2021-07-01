@@ -1,6 +1,7 @@
 import { Navbar, Nav } from "react-bootstrap";
 import { Switch, Route, Link } from "react-router-dom";
 import AddItemForm from "../../pages/addItemForm";
+import LoginForm from "../../pages/loginForm";
 import Menu from "../../pages/menu";
 
 function NavBar() {
@@ -19,6 +20,9 @@ function NavBar() {
             <Nav.Link as={Link} to="/addItem">
               Add Menu Item
             </Nav.Link>
+            <Nav.Link as={Link} to="/login">
+              Login
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -33,6 +37,7 @@ function NavBar() {
           />
           <Route exact path="/" render={() => <Menu />} />
           <Route exact path="/addItem" render={() => <AddItemForm />} />
+          <Route exact path="/login" render={() => <LoginForm />} />
         </Switch>
       </div>
     </>

@@ -1,0 +1,81 @@
+##############################
+# Production yaml file, different from development.yml, because we're removing the external ports
+# For example redis is 6379:6379 in development.yml, but here it is only 6379 so it is accessible by other containers only
+##############################
+
+version: "3.9"
+services:
+  web:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 4000
+    environment:
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres123
+      - PG_HOST=db
+      - PG_PORT=5432
+      - PG_DATABASE=restaurant
+      - REACT_APP_BACKEND_URL=https://hk-gardento.com
+    depends_on:
+      - db
+    links:
+      - db:db
+
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - ./src/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=restaurant
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_PORT=5432
+    ports:
+      - 5432
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    volumes:
+      - ./redis-data:/var/lib/redis/data
+    environment:
+      - REDIS_URL=redis://redis
+    ports:
+      - 6379
+    command: ["redis-server", "--appendonly", "yes"]
+
+  service_name:
+    image: nginx:latest
+    container_name: nginx
+    expose:
+      - 80
+      - 443
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./data/nginx:/etc/nginx/conf.d
+    depends_on:
+      - web
+    # Comment the command below and the https part of the nginx.conf file when running this for the first time
+    # otherwise nginx will crash because it can't execute the command
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    networks:
+      - default
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    restart: always
+    # This will check if your certificate is up for renewal every 12 hours as recommended by Let’s Encrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

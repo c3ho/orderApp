@@ -12,6 +12,7 @@ services:
       - PG_HOST=db
       - PG_PORT=5432
       - PG_DATABASE=restaurant
+      - REACT_APP_BACKEND_URL=https://hk-gardento.com
     depends_on:
       - db
     links:
@@ -30,6 +31,18 @@ services:
       - POSTGRES_PORT=5432
     ports:
       - 5432:5432
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    volumes:
+      - ./redis-data:/var/lib/redis/data
+    environment:
+      - REDIS_URL=redis://redis
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
 
   service_name:
     image: nginx:latest

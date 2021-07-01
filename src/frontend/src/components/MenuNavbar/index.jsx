@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import MenuLayout from "../CardDeck";
+const link = process.env.REACT_APP_BACKEND_URL;
 
 const MenuNavbar = () => {
-  const link = `http://localhost:4000/menu/all`;
-
   const [breakfast, setBreakfast] = useState([]);
+  const [setMeal, setSetMeal] = useState([]);
   const [dailySpecial, setDailySpecial] = useState([]);
-  const [noodleSoups, setNoodleSoup] = useState([]);
+  const [noodleSoup, setNoodleSoup] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [congee, setCongee] = useState([]);
   const [curry, setCurry] = useState([]);
@@ -18,7 +18,7 @@ const MenuNavbar = () => {
   useEffect(() => {
     async function getItems() {
       try {
-        const res = await fetch(link);
+        const res = await fetch(`${link}/menu/all`);
         let items = await res.json();
         items = items.data;
         setBreakfast(items.filter((item) => item.category === "breakfast"));
@@ -26,6 +26,7 @@ const MenuNavbar = () => {
         setDailySpecial(
           items.filter((item) => item.category === "daily_special")
         );
+        setSetMeal(items.filter((item) => item.category === "set_meal"));
         setNoodleSoup(items.filter((item) => item.category === "noodle_soup"));
         setCongee(items.filter((item) => item.category === "congee"));
         setCurry(items.filter((item) => item.category === "curry"));
@@ -39,7 +40,7 @@ const MenuNavbar = () => {
       }
     }
     getItems();
-  }, [link]);
+  }, []);
 
   const clickListener = (category) => {
     switch (category) {
@@ -48,8 +49,9 @@ const MenuNavbar = () => {
         setMenuItems(dailySpecial);
         break;
 
-      case "setMeals":
+      case "setMeal":
         setMenuHeader("Set Meals");
+        setMenuItems(setMeal);
         break;
 
       case "breakfast":
@@ -64,7 +66,7 @@ const MenuNavbar = () => {
 
       case "noodleSoup":
         setMenuHeader("Noodle Soup");
-        setMenuItems(noodleSoups);
+        setMenuItems(noodleSoup);
         break;
 
       case "curry":
@@ -73,7 +75,7 @@ const MenuNavbar = () => {
         break;
 
       case "bakedCombo":
-        setMenuHeader("Backed Combo");
+        setMenuHeader("Baked Combo");
         setMenuItems(bakedCombo);
         break;
 
@@ -98,19 +100,23 @@ const MenuNavbar = () => {
             <Nav.Link id="fb" onClick={() => clickListener("daily_special")}>
               Daily Specials
             </Nav.Link>
-            <Nav.Link onClick={() => clickListener("set_meals")}>
-              Set Meals 出前一丁
+            <Nav.Link onClick={() => clickListener("setMeal")}>
+              Set Meals
             </Nav.Link>
             <Nav.Link onClick={() => clickListener("breakfast")}>
               Breakfast
             </Nav.Link>
-            <Nav.Link>Congee</Nav.Link>
-            <Nav.Link onClick={() => clickListener("noodle_soup")}>
+            <Nav.Link onClick={() => clickListener("congee")}>Congee</Nav.Link>
+            <Nav.Link onClick={() => clickListener("noodleSoup")}>
               Noodle Soups
             </Nav.Link>
-            <Nav.Link>Curry</Nav.Link>
-            <Nav.Link>Baked Combo</Nav.Link>
-            <Nav.Link>High Tea</Nav.Link>
+            <Nav.Link onClick={() => clickListener("curry")}>Curry</Nav.Link>
+            <Nav.Link onClick={() => clickListener("bakedCombo")}>
+              Baked Combo
+            </Nav.Link>
+            <Nav.Link onClick={() => clickListener("highTea")}>
+              High Tea
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
