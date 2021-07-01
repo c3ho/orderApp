@@ -6,6 +6,10 @@ module.exports = {
     add: sql("items/add.sql"),
     find: sql("items/find.sql"),
   },
+  users: {
+    add: sql("users/add.sql"),
+    find: sql("users/find.sql"),
+  }
 };
 
 function sql(file) {

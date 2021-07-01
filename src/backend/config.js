@@ -11,4 +11,7 @@ module.exports = {
   pgHost: process.env.PG_HOST,
   pgPassword: process.env.PG_PASSWORD,
   pgDatabase: process.env.PG_DATABASE,
+  env: process.env.APP_MODE,
+  jwtSecret: process.env.JWT_SECRET,
+  refreshSecret: process.env.REFRESH_SECRET,
 };

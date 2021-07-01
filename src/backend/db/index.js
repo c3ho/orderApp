@@ -1,6 +1,6 @@
 const pgPromise = require("pg-promise");
 const dbConfig = require("../config");
-const { Items } = require("./repos");
+const { Items, Users } = require("./repos");
 const { pgUser, pgPassword, pgHost, pgPort, pgDatabase } = require("../config");
 
 const MAX_RETRIES = 5
@@ -8,6 +8,7 @@ const MAX_RETRIES = 5
 const initOptions = {
   extend(obj, dc) {
     obj.items = new Items(obj, pgp);
+    obj.users = new Users(obj, pgp);
   },
 };
 

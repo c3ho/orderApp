@@ -10,6 +10,7 @@ class ItemsRepository {
   }
 
   async add(props) {
+    console.log(props)
     try {
       const {id, name, chinese, price, category, enabled} = props
       if (!(id, name, chinese, price, category, enabled)) {
