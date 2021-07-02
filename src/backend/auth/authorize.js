@@ -42,16 +42,7 @@ module.exports = function(passport) {
         }
     ))
 
-    passport.serializeUser(function(user, done) {
-        done(null, user);
-    });
-
-    passport.deserializeUser(async function(id, done) {
-        const user = await db.users.findById(id)
-        done(null, user);
-    });
-
-    passport.use(new JWTstrategy(
+    passport.use('jwt', new JWTstrategy(
         {
             secretOrKey: jwtSecret,
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
@@ -67,8 +58,16 @@ module.exports = function(passport) {
             jwtFromRequest: cookieExtractor,
         },
         (token, done) => {
-            console.log(token, 'token')
             return done(null, token)
         }
     ));
+
+        passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+
+    passport.deserializeUser(async function(id, done) {
+        const user = await db.users.getAccountInfo(id)
+        done(null, user);
+    });
 }

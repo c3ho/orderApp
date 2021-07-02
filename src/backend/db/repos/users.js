@@ -76,12 +76,26 @@ class UsersRepository {
   }
 
   async findById(id) {
-    console.log(id, 'id')
     try {
       if (!(id)) {
         throw "Id field is empty!"
       }
       const lookup = await this.db.oneOrNone("SELECT id FROM users where id = $1", id)
+      if (lookup) {
+          return lookup
+      }
+      return false
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async getAccountInfo(id) {
+    try {
+      if (!(id)) {
+        throw "Id field is empty!"
+      }
+      const lookup = await this.db.oneOrNone("SELECT id, account_type FROM users where id = $1", id)
       if (lookup) {
           return lookup
       }
